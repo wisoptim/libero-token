@@ -308,7 +308,7 @@ contract LiberoToken is ERC20Detailed, Ownable {
     bool public feesOnNormalTransfers = false;
     bool public isLiquidityInBnb = true;
 
-    uint256 public rewardYield = 4208333;
+    uint256 public rewardYield = 3958000;
     uint256 public rewardYieldDenominator = 10000000000;
    // uint256 public maxSellTransactionAmount = 2500000 * 10**18;
 
