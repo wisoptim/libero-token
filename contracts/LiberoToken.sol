@@ -359,6 +359,7 @@ contract LiberoToken is ERC20Detailed, Ownable {
     bool inSwap;
 
     modifier swapping() {
+        require (inSwap == false, "ReentrancyGuard: reentrant call");
         inSwap = true;
         _;
         inSwap = false;
