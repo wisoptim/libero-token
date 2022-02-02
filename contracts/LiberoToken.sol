@@ -927,10 +927,10 @@ contract LiberoToken is ERC20Detailed, Ownable {
         totalSellFee = totalBuyFee.add(sellFeeTreasuryAdded);
 
         require(totalBuyFee <= MAX_FEE_BUY, "Total BUY fee is too high");
-        require(totalBuyFee <= MAX_FEE_SELL, "Total SELL fee is too high");
+        require(totalSellFee <= MAX_FEE_SELL, "Total SELL fee is too high");
         
         feeDenominator = _feeDenominator;
-        require(totalBuyFee < feeDenominator / 4);
+        require(totalBuyFee < feeDenominator / 4, "totalBuyFee");
     }
 
     function clearStuckBalance(address _receiver) external onlyOwner {
