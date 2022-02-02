@@ -320,6 +320,8 @@ contract LiberoToken is ERC20Detailed, Ownable {
     mapping(address => bool) public automatedMarketMakerPairs;
 
     uint256 public constant MAX_FEE_RATE = 18;
+    uint256 public constant MAX_FEE_BUY = 13;
+    uint256 public constant MAX_FEE_SELL = 18;
     uint256 private constant MAX_REBASE_FREQUENCY = 1800;
     uint256 private constant DECIMALS = 18;
     uint256 private constant MAX_UINT256 = ~uint256(0);
@@ -346,11 +348,10 @@ contract LiberoToken is ERC20Detailed, Ownable {
     uint256 public liquidityFee = 5;
     uint256 public treasuryFee = 3;
     uint256 public buyFeeRFV = 5;
-    uint256 public sellFeeTreasuryAdded = 2;
-    uint256 public sellFeeRFVAdded = 5;
+    uint256 public sellFeeTreasuryAdded = 5;
     uint256 public totalBuyFee = liquidityFee.add(treasuryFee).add(buyFeeRFV);
     uint256 public totalSellFee =
-        totalBuyFee.add(sellFeeTreasuryAdded).add(sellFeeRFVAdded);
+        totalBuyFee.add(sellFeeTreasuryAdded);
     uint256 public feeDenominator = 100;
 
     uint256 targetLiquidity = 50;
@@ -700,7 +701,7 @@ contract LiberoToken is ERC20Detailed, Ownable {
             .mul(dynamicLiquidityFee.mul(2))
             .div(realTotalFee);
         uint256 amountToRFV = contractTokenBalance
-            .mul(buyFeeRFV.mul(2).add(sellFeeRFVAdded))
+            .mul(buyFeeRFV.mul(2))
             .div(realTotalFee);
         uint256 amountToTreasury = contractTokenBalance
             .sub(amountToLiquify)
@@ -908,15 +909,13 @@ contract LiberoToken is ERC20Detailed, Ownable {
         uint256 _riskFreeValue,
         uint256 _treasuryFee,
         uint256 _sellFeeTreasuryAdded,
-        uint256 _sellFeeRFVAdded,
         uint256 _feeDenominator
     ) external onlyOwner {
         require(
             _liquidityFee <= MAX_FEE_RATE &&
                 _riskFreeValue <= MAX_FEE_RATE &&
                 _treasuryFee <= MAX_FEE_RATE &&
-                _sellFeeTreasuryAdded <= MAX_FEE_RATE &&
-                _sellFeeRFVAdded <= MAX_FEE_RATE,
+                _sellFeeTreasuryAdded <= MAX_FEE_RATE,
             "wrong"
         );
 
@@ -924,11 +923,12 @@ contract LiberoToken is ERC20Detailed, Ownable {
         buyFeeRFV = _riskFreeValue;
         treasuryFee = _treasuryFee;
         sellFeeTreasuryAdded = _sellFeeTreasuryAdded;
-        sellFeeRFVAdded = _sellFeeRFVAdded;
         totalBuyFee = liquidityFee.add(treasuryFee).add(buyFeeRFV);
-        totalSellFee = totalBuyFee.add(sellFeeTreasuryAdded).add(
-            sellFeeRFVAdded
-        );
+        totalSellFee = totalBuyFee.add(sellFeeTreasuryAdded);
+
+        require(totalBuyFee <= MAX_FEE_BUY, "Total BUY fee is too high");
+        require(totalBuyFee <= MAX_FEE_SELL, "Total SELL fee is too high");
+        
         feeDenominator = _feeDenominator;
         require(totalBuyFee < feeDenominator / 4);
     }
