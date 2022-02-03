@@ -1,15 +1,9 @@
-# Basic Sample Hardhat Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
-
-Try running some of the following tasks:
+How to run
 
 ```shell
-npx hardhat accounts
+npm install
 npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
+npx hardhat run scripts/deploy.js --network bsctestnet
+npx hardhat verify --network bsctestnet 0x988DA3A2c13CBee1fA6EFbD891C62d793e52aBfB
 ```
