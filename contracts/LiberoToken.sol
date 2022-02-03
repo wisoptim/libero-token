@@ -50,90 +50,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
     }
 }
 
-/* interface IERC20 {
-    function totalSupply() external view returns (uint256);
-
-    function balanceOf(address who) external view returns (uint256);
-
-    function allowance(address owner, address spender)
-        external
-        view
-        returns (uint256);
-
-    function transfer(address to, uint256 value) external returns (bool);
-
-    function approve(address spender, uint256 value) external returns (bool);
-
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external returns (bool);
-
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
-} */
-
-/* library SafeMath {
-    function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        require(c >= a, "SafeMath: addition overflow");
-
-        return c;
-    }
-
-    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        return sub(a, b, "SafeMath: subtraction overflow");
-    }
-
-    function sub(
-        uint256 a,
-        uint256 b,
-        string memory errorMessage
-    ) internal pure returns (uint256) {
-        require(b <= a, errorMessage);
-        uint256 c = a - b;
-
-        return c;
-    }
-
-    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        if (a == 0) {
-            return 0;
-        }
-
-        uint256 c = a * b;
-        require(c / a == b, "SafeMath: multiplication overflow");
-
-        return c;
-    }
-
-    function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        return div(a, b, "SafeMath: division by zero");
-    }
-
-    function div(
-        uint256 a,
-        uint256 b,
-        string memory errorMessage
-    ) internal pure returns (uint256) {
-        require(b > 0, errorMessage);
-        uint256 c = a / b;
-
-        return c;
-    }
-
-    function mod(uint256 a, uint256 b) internal pure returns (uint256) {
-        require(b != 0);
-        return a % b;
-    }
-} */
-
 interface InterfaceLP {
     function sync() external;
 }
@@ -259,45 +175,6 @@ interface IDEXFactory {
         returns (address pair);
 }
 
-/* contract Ownable {
-    address private _owner;
-
-    event OwnershipRenounced(address indexed previousOwner);
-
-    event OwnershipTransferred(
-        address indexed previousOwner,
-        address indexed newOwner
-    );
-
-    constructor() {
-        _owner = msg.sender;
-    }
-
-    function owner() public view returns (address) {
-        return _owner;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == _owner, "Not owner");
-        _;
-    }
-
-    function renounceOwnership() public onlyOwner {
-        emit OwnershipRenounced(_owner);
-        _owner = address(0);
-    }
-
-    function transferOwnership(address newOwner) public onlyOwner {
-        _transferOwnership(newOwner);
-    }
-
-    function _transferOwnership(address newOwner) internal {
-        require(newOwner != address(0));
-        emit OwnershipTransferred(_owner, newOwner);
-        _owner = newOwner;
-    }
-} */
-
 contract LiberoToken is ERC20Detailed, Ownable {
     using SafeMath for uint256;
     using SafeMathInt for int256;
@@ -305,12 +182,11 @@ contract LiberoToken is ERC20Detailed, Ownable {
     bool public initialDistributionFinished = false;
     bool public swapEnabled = true;
     bool public autoRebase = false;
-    bool public feesOnNormalTransfers = false;
+    //bool public feesOnNormalTransfers = false;
     bool public isLiquidityInBnb = true;
 
     uint256 public rewardYield = 3958000;
     uint256 public rewardYieldDenominator = 10000000000;
-   // uint256 public maxSellTransactionAmount = 2500000 * 10**18;
 
     uint256 public rebaseFrequency = 1800;
     uint256 public nextRebase = block.timestamp + 31536000;
@@ -340,7 +216,10 @@ contract LiberoToken is ERC20Detailed, Ownable {
         0x9CCE932283183F637e4870a63bDf1e6C348DbB64;
     address public riskFreeValueReceiver =
         0x94DC0b13E66ABa9450b3Cc44c2643BBb4C264BC7;
-    address public busdToken = 0x55d398326f99059fF775485246999027B3197955;
+    
+    //usdt
+    //address public busdToken = 0x55d398326f99059fF775485246999027B3197955; //mainnet
+    address public busdToken = 0x377533D0E68A22CF180205e9c9ed980f74bc5050; //testnet
 
     IDEXRouter public router;
     address public pair;
@@ -381,7 +260,9 @@ contract LiberoToken is ERC20Detailed, Ownable {
     constructor()
         ERC20Detailed("Libero Financial Freedom", "LIBERO", uint8(DECIMALS))
     {
-        router = IDEXRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E);
+        //router = IDEXRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E); //mainnet
+        router = IDEXRouter(0xD99D1c33F9fC3444f8101754aBC46c52416550D1); //testnet
+        
         pair = IDEXFactory(router.factory()).createPair(
             address(this),
             router.WETH()
@@ -453,8 +334,8 @@ contract LiberoToken is ERC20Detailed, Ownable {
     {
         if (_isFeeExempt[from] || _isFeeExempt[to]) {
             return false;
-        } else if (feesOnNormalTransfers) {
-            return true;
+       /*  } else if (feesOnNormalTransfers) {
+            return true; */
         } else {
             return (automatedMarketMakerPairs[from] ||
                 automatedMarketMakerPairs[to]);
@@ -541,10 +422,6 @@ contract LiberoToken is ERC20Detailed, Ownable {
             initialDistributionFinished || excludedAccount,
             "Trading not started"
         );
-
-        /* if (automatedMarketMakerPairs[recipient] && !excludedAccount) {
-            require(amount <= maxSellTransactionAmount, "Error amount");
-        } */
 
         if (inSwap) {
             return _basicTransfer(sender, recipient, amount);
@@ -965,10 +842,10 @@ contract LiberoToken is ERC20Detailed, Ownable {
         rewardYieldDenominator = _rewardYieldDenominator;
     }
 
-    function setFeesOnNormalTransfers(bool _enabled) external onlyOwner {
+/*     function setFeesOnNormalTransfers(bool _enabled) external onlyOwner {
         require(feesOnNormalTransfers != _enabled, "Not changed");
         feesOnNormalTransfers = _enabled;
-    }
+    } */
 
     function setIsLiquidityInBnb(bool _value) external onlyOwner {
         require(isLiquidityInBnb != _value, "Not changed");
@@ -978,10 +855,6 @@ contract LiberoToken is ERC20Detailed, Ownable {
     function setNextRebase(uint256 _nextRebase) external onlyOwner {
         nextRebase = _nextRebase;
     }
-
-   /*  function setMaxSellTransaction(uint256 _maxTxn) external onlyOwner {
-        maxSellTransactionAmount = _maxTxn;
-    } */
 
     event SwapBack(
         uint256 contractTokenBalance,
