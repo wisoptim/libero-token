@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-etherscan");
 const{ privateKey, binanceAPIKey } =require('./.secrets.json')
 
 // This is a sample Hardhat task. To learn how to create your own go to
