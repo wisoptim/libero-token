@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+const{ privateKey, binanceAPIKey } =require('./.secrets.json')
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -27,4 +28,23 @@ module.exports = {
       },
     },
   },
+  networks: {
+    hardhat: {
+    },
+    bsctestnet: {
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+      accounts: [privateKey],
+      chainId: 97
+    },
+    bscmainnet: {
+      url: "https://dataseed1.binance.org/",
+      accounts: [privateKey],
+      chainId: 97
+    }
+  },
+  etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: binanceAPIKey
+  }
 };

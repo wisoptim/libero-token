@@ -257,8 +257,8 @@ contract LiberoToken is ERC20Detailed, Ownable {
     mapping(address => uint256) private _gonBalances;
     mapping(address => mapping(address => uint256)) private _allowedFragments;
 
-    constructor()
-        ERC20Detailed("Libero Financial Freedom", "LIBERO", uint8(DECIMALS))
+    //constructor() ERC20Detailed("Libero Financial Freedom", "LIBERO", uint8(DECIMALS))
+    constructor() ERC20Detailed("Test", "TEST", uint8(DECIMALS))
     {
         //router = IDEXRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E); //mainnet
         router = IDEXRouter(0xD99D1c33F9fC3444f8101754aBC46c52416550D1); //testnet
