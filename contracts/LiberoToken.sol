@@ -252,7 +252,7 @@ contract LiberoToken is ERC20Detailed, Ownable {
 
     uint256 private _totalSupply;
     uint256 private _gonsPerFragment;
-    uint256 private gonSwapThreshold = (TOTAL_GONS * 10) / 10000;
+    uint256 private gonSwapThreshold = TOTAL_GONS  / 1000;
 
     mapping(address => uint256) private _gonBalances;
     mapping(address => mapping(address => uint256)) private _allowedFragments;
