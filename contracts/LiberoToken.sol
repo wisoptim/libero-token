@@ -593,7 +593,8 @@ contract LiberoToken is ERC20Detailed, Ownable {
         }
 
         if (amountToTreasury > 0) {
-            _swapTokensForBNB(amountToTreasury, treasuryReceiver);
+           // _swapTokensForBNB(amountToTreasury, treasuryReceiver);
+            _swapTokensForBusd(amountToTreasury, treasuryReceiver);
         }
 
         emit SwapBack(
