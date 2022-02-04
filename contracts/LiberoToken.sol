@@ -218,8 +218,8 @@ contract LiberoToken is ERC20Detailed, Ownable {
         0x94DC0b13E66ABa9450b3Cc44c2643BBb4C264BC7;
     
     //usdt
-    //address public busdToken = 0x55d398326f99059fF775485246999027B3197955; //mainnet
-    address public busdToken = 0x377533D0E68A22CF180205e9c9ed980f74bc5050; //testnet
+    //address public usdtToken = 0x55d398326f99059fF775485246999027B3197955; //mainnet
+    address public usdtToken = 0x377533D0E68A22CF180205e9c9ed980f74bc5050; //testnet
 
     IDEXRouter public router;
     address public pair;
@@ -269,7 +269,7 @@ contract LiberoToken is ERC20Detailed, Ownable {
         );
         address pairBusd = IDEXFactory(router.factory()).createPair(
             address(this),
-            busdToken
+            usdtToken
         );
 
         _allowedFragments[address(this)][address(router)] = type(uint256).max;
@@ -289,9 +289,9 @@ contract LiberoToken is ERC20Detailed, Ownable {
         _isFeeExempt[address(this)] = true;
         _isFeeExempt[msg.sender] = true;
 
-        IERC20(busdToken).approve(address(router), type(uint256).max);
-        IERC20(busdToken).approve(address(pairBusd), type(uint256).max);
-        IERC20(busdToken).approve(address(this), type(uint256).max);
+        IERC20(usdtToken).approve(address(router), type(uint256).max);
+        IERC20(usdtToken).approve(address(pairBusd), type(uint256).max);
+        IERC20(usdtToken).approve(address(this), type(uint256).max);
 
         emit Transfer(address(0x0), msg.sender, _totalSupply);
     }
@@ -492,11 +492,11 @@ contract LiberoToken is ERC20Detailed, Ownable {
 
             emit SwapAndLiquify(half, newBalance, otherHalf);
         } else {
-            uint256 initialBalance = IERC20(busdToken).balanceOf(address(this));
+            uint256 initialBalance = IERC20(usdtToken).balanceOf(address(this));
 
             _swapTokensForBusd(half, address(this));
 
-            uint256 newBalance = IERC20(busdToken).balanceOf(address(this)).sub(
+            uint256 newBalance = IERC20(usdtToken).balanceOf(address(this)).sub(
                 initialBalance
             );
 
@@ -522,7 +522,7 @@ contract LiberoToken is ERC20Detailed, Ownable {
     {
         router.addLiquidity(
             address(this),
-            busdToken,
+            usdtToken,
             tokenAmount,
             busdAmount,
             0,
@@ -550,7 +550,7 @@ contract LiberoToken is ERC20Detailed, Ownable {
         address[] memory path = new address[](3);
         path[0] = address(this);
         path[1] = router.WETH();
-        path[2] = busdToken;
+        path[2] = usdtToken;
 
         router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
             tokenAmount,
