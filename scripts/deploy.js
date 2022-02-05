@@ -14,12 +14,12 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Libero = await hre.ethers.getContractFactory("LiberoToken");
-  const libero = await Libero.deploy();
+  const TEST = await hre.ethers.getContractFactory("TEST");
+  const test = await TEST.deploy();
 
-  await libero.deployed();
+  await test.deployed();
 
-  console.log("LiberoToken deployed to:", libero.address);
+  console.log("TEST deployed to:", test.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
