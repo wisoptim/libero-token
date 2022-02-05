@@ -175,7 +175,7 @@ interface IDEXFactory {
         returns (address pair);
 }
 
-contract LiberoToken is ERC20Detailed, Ownable {
+contract TEST is ERC20Detailed, Ownable {
     using SafeMath for uint256;
     using SafeMathInt for int256;
 
