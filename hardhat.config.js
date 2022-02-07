@@ -38,9 +38,9 @@ module.exports = {
       chainId: 97
     },
     bscmainnet: {
-      url: "https://dataseed1.binance.org/",
+      url: "https://bsc-dataseed.binance.org/",
       accounts: [privateKey],
-      chainId: 97
+      chainId: 56
     }
   },
   etherscan: {

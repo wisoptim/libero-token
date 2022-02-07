@@ -1,11 +1,3 @@
-/**
- *Submitted for verification at BscScan.com on 2022-01-29
- */
-
-/**
- *Submitted for verification at BscScan.com on 2022-01-27
- */
-
 // SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.4;
@@ -182,7 +174,6 @@ contract TEST is ERC20Detailed, Ownable {
     bool public initialDistributionFinished = false;
     bool public swapEnabled = true;
     bool public autoRebase = false;
-    //bool public feesOnNormalTransfers = false;
     bool public isLiquidityInBnb = true;
 
     uint256 public rewardYield = 3958000;
@@ -217,9 +208,7 @@ contract TEST is ERC20Detailed, Ownable {
     address public riskFreeValueReceiver =
         0x94DC0b13E66ABa9450b3Cc44c2643BBb4C264BC7;
     
-    //usdt
-    //address public usdtToken = 0x55d398326f99059fF775485246999027B3197955; //mainnet
-    address public usdtToken = 0x377533D0E68A22CF180205e9c9ed980f74bc5050; //testnet
+    address public usdtToken = 0x55d398326f99059fF775485246999027B3197955; //mainnet
 
     IDEXRouter public router;
     address public pair;
@@ -260,8 +249,7 @@ contract TEST is ERC20Detailed, Ownable {
     //constructor() ERC20Detailed("Libero Financial Freedom", "LIBERO", uint8(DECIMALS))
     constructor() ERC20Detailed("Test", "TEST", uint8(DECIMALS))
     {
-        //router = IDEXRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E); //mainnet
-        router = IDEXRouter(0xD99D1c33F9fC3444f8101754aBC46c52416550D1); //testnet
+        router = IDEXRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E); //mainnet
         
         pair = IDEXFactory(router.factory()).createPair(
             address(this),
@@ -334,8 +322,6 @@ contract TEST is ERC20Detailed, Ownable {
     {
         if (_isFeeExempt[from] || _isFeeExempt[to]) {
             return false;
-       /*  } else if (feesOnNormalTransfers) {
-            return true; */
         } else {
             return (automatedMarketMakerPairs[from] ||
                 automatedMarketMakerPairs[to]);
@@ -593,7 +579,6 @@ contract TEST is ERC20Detailed, Ownable {
         }
 
         if (amountToTreasury > 0) {
-           // _swapTokensForBNB(amountToTreasury, treasuryReceiver);
             _swapTokensForBusd(amountToTreasury, treasuryReceiver);
         }
 
@@ -816,15 +801,6 @@ contract TEST is ERC20Detailed, Ownable {
         payable(_receiver).transfer(balance);
     }
 
-    /* 
-     function rescueToken(address tokenAddress, uint256 tokens)
-        external
-        onlyOwner
-        returns (bool success)
-    {
-        return ERC20Detailed(tokenAddress).transfer(msg.sender, tokens);
-    }
- */
     function setAutoRebase(bool _autoRebase) external onlyOwner {
         require(autoRebase != _autoRebase, "Not changed");
         autoRebase = _autoRebase;
@@ -842,11 +818,6 @@ contract TEST is ERC20Detailed, Ownable {
         rewardYield = _rewardYield;
         rewardYieldDenominator = _rewardYieldDenominator;
     }
-
-/*     function setFeesOnNormalTransfers(bool _enabled) external onlyOwner {
-        require(feesOnNormalTransfers != _enabled, "Not changed");
-        feesOnNormalTransfers = _enabled;
-    } */
 
     function setIsLiquidityInBnb(bool _value) external onlyOwner {
         require(isLiquidityInBnb != _value, "Not changed");
