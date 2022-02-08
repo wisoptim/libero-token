@@ -167,7 +167,7 @@ interface IDEXFactory {
         returns (address pair);
 }
 
-contract TEST is ERC20Detailed, Ownable {
+contract Titano is ERC20Detailed, Ownable {
     using SafeMath for uint256;
     using SafeMathInt for int256;
 
@@ -246,8 +246,7 @@ contract TEST is ERC20Detailed, Ownable {
     mapping(address => uint256) private _gonBalances;
     mapping(address => mapping(address => uint256)) private _allowedFragments;
 
-    //constructor() ERC20Detailed("Libero Financial Freedom", "LIBERO", uint8(DECIMALS))
-    constructor() ERC20Detailed("Test", "TEST", uint8(DECIMALS))
+    constructor() ERC20Detailed("Titano", "TITANO", uint8(DECIMALS))
     {
         router = IDEXRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E); //mainnet
         
