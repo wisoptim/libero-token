@@ -19,7 +19,7 @@ npm install
 npx hardhat run scripts/deploy.js --network bsctestnet
 ```
 3. Verify the contract
-- address will be logs after deployment previous step
+- address will be in logs after deployment on the previous step
 ```shell
  npx hardhat verify --network bsctestnet  0x55c2ca72EBe5549193ECaFD22Fc73d9c763097aE
 ```
