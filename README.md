@@ -1,9 +1,25 @@
 
-How to run
+# How to deploy #
 
+## Prepare data ##
+1. Get Binance API key. Need to register on https://bscscan.com/register
+API key can be found there
+2. Get private key for deployment
+3. Rename file *.secrets.example.json* into *.secrets.json*
+4. Put the keys into the *.secrets.json* file
+
+## Deploy contract ##
+1. Install packages
 ```shell
 npm install
-npx hardhat compile
+```
+2. Deploy contract
+- parameter *--network* can have bsctestnet or *bscmainnet*
+```shell
 npx hardhat run scripts/deploy.js --network bsctestnet
-npx hardhat verify --network bsctestnet 0x988DA3A2c13CBee1fA6EFbD891C62d793e52aBfB
+```
+3. Verify the contract
+- address will be logs after deployment previous step
+```shell
+ npx hardhat verify --network bsctestnet  0x55c2ca72EBe5549193ECaFD22Fc73d9c763097aE
 ```
