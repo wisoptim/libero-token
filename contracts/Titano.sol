@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
  library SafeMathInt {
     int256 private constant MIN_INT256 = int256(1) << 255;
@@ -167,7 +168,7 @@ interface IDEXFactory {
         returns (address pair);
 }
 
-contract Titano is ERC20Detailed, Ownable {
+contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeMathInt for int256;
 
@@ -689,7 +690,7 @@ contract Titano is ERC20Detailed, Ownable {
         return _totalSupply;
     }
 
-    function manualRebase() external onlyOwner {
+    function manualRebase() external  nonReentrant{
         require(!inSwap, "Try again");
         require(nextRebase <= block.timestamp, "Not in time");
 
