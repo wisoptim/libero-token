@@ -15,6 +15,12 @@ npm install
 ```
 2. Deploy contract
 - parameter *--network* can have bsctestnet or *bscmainnet*
+
+If deploying on testnet then need to change the code:
+```
+251: router = IDEXRouter(0xD99D1c33F9fC3444f8101754aBC46c52416550D1);
+211: address public usdtToken = 0x377533D0E68A22CF180205e9c9ed980f74bc5050;
+```
 ```shell
 npx hardhat run scripts/deploy.js --network bsctestnet
 ```
