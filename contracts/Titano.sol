@@ -169,7 +169,7 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     uint256 private constant DECIMALS = 18;
     uint256 private constant MAX_UINT256 = ~uint256(0);
     uint256 private constant INITIAL_FRAGMENTS_SUPPLY =
-        5 * 10**9 * 10**DECIMALS;
+        8 * 10**8 * 10**DECIMALS;
     uint256 private constant TOTAL_GONS =
         MAX_UINT256 - (MAX_UINT256 % INITIAL_FRAGMENTS_SUPPLY);
     uint256 private constant MAX_SUPPLY = ~uint128(0);
@@ -184,7 +184,7 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     address public riskFreeValueReceiver =
         0x94DC0b13E66ABa9450b3Cc44c2643BBb4C264BC7;
     
-    address public usdtToken = 0x55d398326f99059fF775485246999027B3197955; //mainnet
+    address public usdtToken = 0x377533D0E68A22CF180205e9c9ed980f74bc5050; //mainnet
 
     IDEXRouter public router;
     address public pair;
@@ -224,7 +224,7 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
 
     constructor() ERC20Detailed("Titano", "TITANO", uint8(DECIMALS))
     {
-        router = IDEXRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E); //mainnet
+        router = IDEXRouter(0xD99D1c33F9fC3444f8101754aBC46c52416550D1); //mainnet
         
         pair = IDEXFactory(router.factory()).createPair(
             address(this),
