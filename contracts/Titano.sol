@@ -178,11 +178,11 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     address ZERO = 0x0000000000000000000000000000000000000000;
 
     address public liquidityReceiver =
-        0x5A50173A8c02464ba737B669fadAe2fdAd293157;
+        0xF52c9341dC4ee92c321Fa11e01E3a6303f9bBe00;
     address public treasuryReceiver =
-        0x9CCE932283183F637e4870a63bDf1e6C348DbB64;
+        0x6560eD767D6003D779F60BCCD2d7B168Cd4a1583;
     address public riskFreeValueReceiver =
-        0x94DC0b13E66ABa9450b3Cc44c2643BBb4C264BC7;
+        0xAf47725C293452Ade77770Bfb6BD2680564DA157;
     
     address public usdtToken = 0x377533D0E68A22CF180205e9c9ed980f74bc5050; //mainnet
 
