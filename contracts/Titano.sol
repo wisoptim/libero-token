@@ -14,31 +14,31 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
     function mul(int256 a, int256 b) internal pure returns (int256) {
         int256 c = a * b;
 
-        require(c != MIN_INT256 || (a & MIN_INT256) != (b & MIN_INT256));
-        require((b == 0) || (c / b == a));
+        require(c != MIN_INT256 || (a & MIN_INT256) != (b & MIN_INT256), "mul: invalid with MIN_INT256");
+        require((b == 0) || (c / b == a), "mul: combi values invalid");
         return c;
     }
 
     function div(int256 a, int256 b) internal pure returns (int256) {
-        require(b != -1 || a != MIN_INT256);
-
+        require(b != -1 || a != MIN_INT256, "div: b == 1 or a == MIN_INT256");
         return a / b;
     }
 
     function sub(int256 a, int256 b) internal pure returns (int256) {
         int256 c = a - b;
-        require((b >= 0 && c <= a) || (b < 0 && c > a));
+        require((b >= 0 && c <= a) || (b < 0 && c > a), "sub: combi values invalid");
         return c;
+
     }
 
     function add(int256 a, int256 b) internal pure returns (int256) {
         int256 c = a + b;
-        require((b >= 0 && c >= a) || (b < 0 && c < a));
+        require((b >= 0 && c >= a) || (b < 0 && c < a), "add: combi values invalid");
         return c;
     }
 
     function abs(int256 a) internal pure returns (int256) {
-        require(a != MIN_INT256);
+        require(a != MIN_INT256, "abs: a equal MIN INT256");
         return a < 0 ? -a : a;
     }
 }
@@ -236,7 +236,7 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     }
 
     modifier validRecipient(address to) {
-        require(to != address(0x0));
+        require(to != address(0x0), "Recipient zero address");
         _;
     }
 
@@ -701,6 +701,7 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
 
         coreRebase(supplyDelta);
         manualSync();
+        emit ManualRebase(supplyDelta);
     }
 
     function setAutomatedMarketMakerPair(address _pair, bool _value)
@@ -733,11 +734,13 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     function setInitialDistributionFinished(bool _value) external onlyOwner {
         require(initialDistributionFinished != _value, "Not changed");
         initialDistributionFinished = _value;
+        emit setInitialDistributionFinished(_value);
     }
 
     function setFeeExempt(address _addr, bool _value) external onlyOwner {
         require(_isFeeExempt[_addr] != _value, "Not changed");
         _isFeeExempt[_addr] = _value;
+        emit setFeeExempt(_addr, _value);
     }
 
     function setTargetLiquidity(uint256 target, uint256 accuracy)
@@ -746,6 +749,7 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     {
         targetLiquidity = target;
         targetLiquidityDenominator = accuracy;
+        emit setTargetLiquidity(target, accuracy);
     }
 
     function setSwapBackSettings(
@@ -755,6 +759,7 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     ) external onlyOwner {
         swapEnabled = _enabled;
         gonSwapThreshold = TOTAL_GONS.div(_denom).mul(_num);
+        emit setSwapBackSettings(_enabled, _num, _denom);
     }
 
     function setFeeReceivers(
@@ -765,6 +770,7 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
         liquidityReceiver = _liquidityReceiver;
         treasuryReceiver = _treasuryReceiver;
         riskFreeValueReceiver = _riskFreeValueReceiver;
+        emit setFeeReceivers(_liquidityReceiver, _treasuryReceiver, _riskFreeValueReceiver);
     }
 
     function setFees(
@@ -794,21 +800,26 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
         
         feeDenominator = _feeDenominator;
         require(totalBuyFee < feeDenominator / 4, "totalBuyFee");
+
+        emit setFees(_liquidityFee, _riskFreeValue, _treasuryFee, _sellFeeTreasuryAdded, _feeDenominator);
     }
 
     function clearStuckBalance(address _receiver) external onlyOwner {
         uint256 balance = address(this).balance;
         payable(_receiver).transfer(balance);
+        emit clearStuckBalance(_receiver);
     }
 
     function setAutoRebase(bool _autoRebase) external onlyOwner {
         require(autoRebase != _autoRebase, "Not changed");
         autoRebase = _autoRebase;
+        emit setAutoRebase(_autoRebase);
     }
 
     function setRebaseFrequency(uint256 _rebaseFrequency) external onlyOwner {
         require(_rebaseFrequency <= MAX_REBASE_FREQUENCY, "Too high");
         rebaseFrequency = _rebaseFrequency;
+        emit setRebaseFrequency(_rebaseFrequency);
     }
 
     function setRewardYield(
@@ -817,15 +828,18 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     ) external onlyOwner {
         rewardYield = _rewardYield;
         rewardYieldDenominator = _rewardYieldDenominator;
+        emit setRewardYield(_rewardYield,_rewardYieldDenominator);
     }
 
     function setIsLiquidityInBnb(bool _value) external onlyOwner {
         require(isLiquidityInBnb != _value, "Not changed");
         isLiquidityInBnb = _value;
+        emit setIsLiquidityInBnb(_value);
     }
 
     function setNextRebase(uint256 _nextRebase) external onlyOwner {
         nextRebase = _nextRebase;
+        emit setNextRebase(_nextRebase);
     }
 
     event SwapBack(
@@ -846,4 +860,28 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     );
     event LogRebase(uint256 indexed epoch, uint256 totalSupply);
     event SetAutomatedMarketMakerPair(address indexed pair, bool indexed value);
+    event manualRebase(uint256 supplyDelta);
+    event setInitialDistributionFinished(bool _value);
+    event setFeeExempt(address _addr, bool _value);
+    event setTargetLiquidity(uint256 target, uint256 accuracy);
+    event setSwapBackSettings(bool _enabled, uint256 _num, uint256 _denom);
+    event setFeeReceivers(
+        address _liquidityReceiver,
+        address _treasuryReceiver,
+        address _riskFreeValueReceiver
+    );
+    event setFees(
+        uint256 _liquidityFee,
+        uint256 _riskFreeValue,
+        uint256 _treasuryFee,
+        uint256 _sellFeeTreasuryAdded,
+        uint256 _feeDenominator
+    );
+    event clearStuckBalance(address _receiver);
+    event setAutoRebase(bool _autoRebase);
+    event setRebaseFrequency(uint256 _rebaseFrequency);
+    event setRewardYield(uint256 _rewardYield, uint256 _rewardYieldDenominator);
+    event setIsLiquidityInBnb(bool _value);
+    event setNextRebase(uint256 _nextRebase);
+
 }
