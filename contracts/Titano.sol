@@ -152,7 +152,7 @@ contract Titano is ERC20Detailed, Ownable, ReentrancyGuard {
     bool public autoRebase = false;
     bool public isLiquidityInBnb = true;
 
-    uint256 public rewardYield = 3958000;
+    uint256 public rewardYield = 3958125;
     uint256 public rewardYieldDenominator = 10000000000;
 
     uint256 public rebaseFrequency = 1800;
